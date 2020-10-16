@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.IntPredicate;
+
+import com.sun.source.tree.Tree;
+
 import java.util.Queue;
 import java.util.Stack;
 
@@ -319,6 +322,70 @@ public class BinaryTree {
 			}
 
 		}
+	}
+	
+    /**
+     * @param T1: The roots of binary tree T1.
+     * @param T2: The roots of binary tree T2.
+     * @return: True if T2 is a subtree of T1, or false.
+     * 有两个不同大小的二叉树： T1 有上百万的节点； T2 有好几百的节点。请设计一种算法，判定 T2 是否为 T1的子树
+     * 
+     */
+	
+	//第一种方法：检测是否是子树，递归遍历，其实很简单，但是自己就是做不出，虽然几个月前也做过一次~！
+    public static boolean isSubtree(BinaryTreeNode T1, BinaryTreeNode T2) {
+    	if(T1==null && T2==null) {
+    		return true;
+    	}
+    	if (T1==null) {
+			return false;
+		}
+    	if (isSame(T1,T2)) {
+			return true;
+		}
+    	return isSubtree(T1.left, T2) ||isSubtree(T1.right,T2);
+    }
+
+	private static boolean isSame(BinaryTreeNode t1, BinaryTreeNode t2) {
+		if (t1==null && t2==null) {
+			return true;
+		}
+		if (t1==null||t2==null) {
+			return false;
+		}
+		if (t1.val!=t2.val) {
+			return false;
+		}
+		return isSame(t1.left, t2.left) && isSame(t1.right, t2.right);
+	}
+	
+	//第二种方法，将两树都转换为字符串，然后寻找子串。
+	//这种方法有个雷，虽然1,2是1,2,#，3的子串，但是并不是其子树，所以遍历的时候必须要加上分隔符
+	public static  boolean isSubtreeSec(BinaryTreeNode t1, BinaryTreeNode t2) {
+		if (t1==null &&t2==null) {
+			return true;
+		}
+		if (t1==null) {
+			return false;
+		}
+		StringBuilder sbT1=new StringBuilder();
+		getString(t1,sbT1);
+		StringBuilder sbT2=new StringBuilder();
+		getString(t2,sbT2);
+		if(sbT1.indexOf(sbT2.toString())>=0){
+			return true;
+		}
+		return false;
+	}
+
+	private static void getString(BinaryTreeNode t1, StringBuilder sbT1) {
+		if (t1==null) {
+			sbT1.append(",#");
+			return;
+		}
+		sbT1.append(","+t1.val);
+		getString(t1.left, sbT1);
+		getString(t1.right, sbT1);
 	}
 	
 }
